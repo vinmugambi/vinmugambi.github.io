@@ -1,0 +1,42 @@
+[
+  {
+    "org": "Mountain Hike Safaris",
+    "from": "03/03/2018",
+    "slug": "mhs",
+    "to": "now",
+    "role": "IT and Travel Service Support",
+    "duties": [
+      "Planning clients tours on demand",
+      "Guiding clients through visa application",
+      "Preparing travel itineraries",
+      "Sourcing best travel deals for clients on Amadeus",
+      "Design of marketing media",
+      "General IT support"
+    ]
+  },
+  {
+    "org": "Safaricom PLC",
+    "slug": "saf",
+    "from": "27/11/2017",
+    "to": "26/02/2018",
+    "role": "Technology Intern",
+    "duties": [
+      "Configure test accounts on billing system",
+      "Monitor resource utilization on billing system",
+      "Ideation and user design"
+    ]
+  },
+  {
+    "org": "Kenya National Bureau of Statistics",
+    "slug": "knbs",
+    "from": "15/5/2017",
+    "to": "14/8/2017",
+    "role": "Statistics Intern",
+    "duties": [
+      "Consolidating 2018 budgets from 47 KNBS county offices",
+      "Format and prepare education data on request",
+      "Design data collection forms using CS Pro - a cesnsus data collection application",
+      "Data analysis using R studio"
+    ]
+  }
+]
