@@ -2,16 +2,8 @@
 title: Global Alliance for Peace
 link: https://allianceforpeace.org
 date: 2/sep/2020
-image: 
- - small: alliance.png
- - full: alliance.png
-tags: 
- - NGO
- - charity
- - humanitarian
- - refugees
- - Australia
-type: charity
+screenshot: alliance_for_peace_screenshot_on_laptop.png
+type: NGO website
 ---
 
 Global Alliance is a not for profit organisations that caters for the plight of refugees. It operates in Australia, Burundi, D.R.C Congo, Kenya and Rwanda.
