@@ -41,7 +41,7 @@ ul.skills {
 }
 
 ul.skills li {
-  @apply  px-1 mb-1 mr-2 bg-gray-100 bg-opacity-50;
+  @apply px-1 mb-1 mr-2 bg-gray-100 bg-opacity-50;
 }
 ul.skills li.title {
   @apply font-semibold;

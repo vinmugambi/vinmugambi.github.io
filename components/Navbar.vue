@@ -1,5 +1,5 @@
 <template>
-  <nav class="py-4 border-b border-gray-100">
+  <nav class="">
     <img
       class="w-16 rounded-lg"
       src="/mugambi_avatar.jpg"
