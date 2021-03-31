@@ -9,7 +9,5 @@ social:
  - name: "Figma"
    link: https://figma.com/vinmugambi
    icon: figma.svg
-email:
- icon: gmail.svg
- link: vinmugambi17@gmail.com
+email: vinmugambi17@gmail.com
 ---

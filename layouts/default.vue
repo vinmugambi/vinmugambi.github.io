@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-3xl pt-8 mx-auto">
+  <div class="max-w-4xl pt-8 mx-auto">
     <Navbar />
     <Nuxt />
   </div>
@@ -13,8 +13,8 @@ export default {
 </script>
 
 <style scoped>
-html {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+html * {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Roboto,
+    Oxygen, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 </style>

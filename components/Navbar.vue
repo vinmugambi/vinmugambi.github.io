@@ -1,5 +1,5 @@
 <template>
-  <nav class="">
+  <nav class="px-8">
     <img
       class="w-16 rounded-lg"
       src="/mugambi_avatar.jpg"

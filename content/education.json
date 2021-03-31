@@ -1,10 +1,20 @@
 [
   {
     "org": "Maseno University",
-    "location": "Kisumu, Kenya",
+    "address": "Kisumu",
+    "slug": "university",
     "course": "Mathematics and Computer Science",
     "grade": "Second Class Upper",
-    "from": "3/9/2013",
-    "to": "12/12/2017"
+    "startDate": "3/9/2013",
+    "endDate": "12/12/2017"
+  },
+  {
+    "org": "Muranga High School",
+    "address": "Murang'a",
+    "slug": "secondary",
+    "course": "Secondary Education",
+    "startDate": "8/2/2009",
+    "endDate": "** 2/12/2012",
+    "grade": "A-"
   }
 ]

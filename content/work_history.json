@@ -1,42 +1,41 @@
 [
   {
     "org": "Mountain Hike Safaris",
-    "from": "03/03/2018",
+    "startDate": "03/03/2018",
     "slug": "mhs",
-    "to": "now",
-    "role": "IT and Travel Service Support",
+    "endDate": "10/11/2020",
+    "address": "Jeevan Bharati Building, Nairobi",
+    "title": "Visa Service Consultant",
     "duties": [
-      "Planning clients tours on demand",
-      "Guiding clients through visa application",
-      "Preparing travel itineraries",
-      "Sourcing best travel deals for clients on Amadeus",
-      "Design of marketing media",
-      "General IT support"
+      "Plan clients tours on demand",
+      "Guide clients through visa application",
+      "Prepare travel itineraries",
+      "** Source affordable and convinient travel deals for customers",
+      "Design marketing media",
+      "IT technical support"
     ]
   },
   {
     "org": "Safaricom PLC",
     "slug": "saf",
-    "from": "27/11/2017",
-    "to": "26/02/2018",
-    "role": "Technology Intern",
-    "duties": [
-      "Configure test accounts on billing system",
-      "Monitor resource utilization on billing system",
-      "Ideation and user design"
-    ]
+    "startDate": "27/11/2017",
+    "endDate": "26/02/2018",
+    "title": "Technology Intern",
+    "address": "Safaricom House, Nairobi",
+    "duties": ["Configure and manage test accounts on billing system"]
   },
   {
     "org": "Kenya National Bureau of Statistics",
     "slug": "knbs",
-    "from": "15/5/2017",
-    "to": "14/8/2017",
-    "role": "Statistics Intern",
+    "address": "Nyayo House, Nairobi",
+    "startDate": "15/5/2017",
+    "endDate": "14/8/2017",
+    "title": "Statistics Intern",
     "duties": [
-      "Consolidating 2018 budgets from 47 KNBS county offices",
+      "Consolidate 2018 budgets for 47 KNBS county offices",
       "Format and prepare education data on request",
-      "Design data collection forms using CS Pro - a cesnsus data collection application",
-      "Data analysis using R studio"
+      "Design census data collection digital forms",
+      "Plot data collected using R studio"
     ]
   }
 ]
