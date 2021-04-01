@@ -1,7 +1,20 @@
 <template>
   <main class="py-8">
     <section class="px-8">
-      <nuxt-content :document="about"></nuxt-content>
+      <div class="inline-block">
+        <img
+          class="w-20 bg-gray-50"
+          src="/icon.png"
+          alt="Avatar of Vincent Mugambi"
+        />
+      </div>
+      <div class="inline-block pl-4">
+        <h1>Vincent Mugambi</h1>
+        <div class="subtitle pl-2">Front-end Engineer</div>
+      </div>
+
+      <nuxt-content class="pt-4" :document="about"></nuxt-content>
+
       <ul class="skills" v-for="(skills, lang) in about.skills" :key="lang">
         <li class="title">{{ lang }}</li>
         <li v-for="skill in skills" :key="skill">{{ skill }}</li>
@@ -120,7 +133,7 @@
     </div>
     <section class="p-8">
       <h2>Interests</h2>
-      <ul class="skills">
+      <ul class="skills text-lg">
         <li>Athletics (running)</li>
         <li>Athletics (running</li>
         <li>Travel</li>
@@ -139,7 +152,7 @@
         </li>
         <li>
           <a href="https://twitter.com/getify">Kyle Simpson</a> writer of You
-          Dont Know JavaScripts
+          Dont Know JavaScript book series
         </li>
         <li><a href="https://twitter.com/kanyewest">Kanye West</a></li>
       </ul>
