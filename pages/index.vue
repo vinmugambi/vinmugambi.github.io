@@ -1,16 +1,18 @@
 <template>
   <main class="py-8">
     <section class="px-8">
-      <div class="inline-block">
-        <img
-          class="w-20 bg-gray-50"
-          src="/icon.png"
-          alt="Avatar of Vincent Mugambi"
-        />
-      </div>
-      <div class="inline-block pl-4">
-        <h1>Vincent Mugambi</h1>
-        <div class="subtitle pl-2">Front-end Engineer</div>
+      <div class="flex items-center">
+        <div class="inline-block">
+          <img
+            class="w-20 bg-gray-50"
+            src="/icon.png"
+            alt="Avatar of Vincent Mugambi"
+          />
+        </div>
+        <div class="inline-block pl-4">
+          <h1>Vincent Mugambi</h1>
+          <div class="subtitle">Front-end Engineer</div>
+        </div>
       </div>
 
       <nuxt-content class="pt-4" :document="about"></nuxt-content>
@@ -49,7 +51,7 @@
         tabindex="0"
         aria-labelledby="tab-work-history"
       >
-        <h2>Where I have worked</h2>
+        <h2>Previous employment</h2>
         <ul class="work" v-for="job in work" :key="job.title">
           <li class="title">
             <div>
@@ -113,7 +115,7 @@
         tabindex="0"
         aria-labelledby="tab-education"
       >
-        <h2>My education history</h2>
+        <h2>Education history</h2>
         <ul class="work">
           <li v-for="level in education" :key="level.from" class="title">
             <div>
@@ -135,7 +137,6 @@
       <h2>Interests</h2>
       <ul class="skills text-lg">
         <li>Athletics (running)</li>
-        <li>Athletics (running</li>
         <li>Travel</li>
         <li>Finance and Banking</li>
       </ul>
@@ -190,7 +191,7 @@ export default {
     return {
       tabList: [
         { id: "portfolio", label: "Portfolio" },
-        { id: "work-history", label: "Work history" },
+        { id: "work-history", label: "Employment" },
         { id: "education", label: "Education" }
       ],
       selectedTabId: "portfolio"
@@ -213,13 +214,13 @@ export default {
 
 <style lang="postcss" scoped>
 h1 {
-  @apply text-5xl pb-2;
+  @apply md:text-4xl pb-2 text-3xl;
 }
 section {
   @apply pb-8;
 }
 section h2 {
-  @apply text-4xl pb-6;
+  @apply text-3xl md:text-4xl pb-6;
 }
 section h3 {
   @apply text-2xl;
@@ -257,7 +258,7 @@ ul.skills li.title {
 }
 ul.work,
 ul.influences {
-  @apply list-inside pb-4 text-lg;
+  @apply list-inside pb-4 md:text-lg;
 }
 ul.work li.title {
   @apply pb-2;
