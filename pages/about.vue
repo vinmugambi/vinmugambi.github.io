@@ -76,6 +76,7 @@
                 {{ formatDate(job.startDate) }} &mdash;
                 {{ formatDate(job.endDate) }}
               </i>
+              <em>{{ job.startDate }}</em>
             </div>
 
             <div class="opacity-90">
@@ -222,9 +223,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      var dateString = date.split("/").reverse().join("/");
-      return;
-      new Date(dateString).toLocaleString("en-GB", {
+      return new Date(date).toLocaleDateString("en-KE", {
         month: "short",
         year: "numeric",
       });

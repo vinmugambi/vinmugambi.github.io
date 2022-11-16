@@ -29,11 +29,9 @@ export default {
       <dl class="self-center">
         <dt>
           Personal blog by
-          <nuxt-link class="underline hover:text-blue-500" to="/about"
-            >Vincent Mugambi</nuxt-link
-          >
+          <nuxt-link class="link" to="/about">Vincent Mugambi</nuxt-link>
         </dt>
-        <dd>Here, I share things I learn during work or play</dd>
+        <dd>Here, I share things I learn during work and play</dd>
       </dl>
     </aside>
 

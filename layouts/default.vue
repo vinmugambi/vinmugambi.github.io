@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto max-w-3xl px-4">
     <header class="">
-      <nav class="mx-auto max-w-3xl flex">
+      <nav class="mx-auto max-w-3xl flex py-2">
         <nuxt-link to="/">
           <img
             class="w-16 rounded-full hover:bg-gray-100"

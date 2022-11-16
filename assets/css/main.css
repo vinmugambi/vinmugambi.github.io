@@ -5,3 +5,19 @@
 body {
   @apply text-lg;
 }
+
+.link {
+  @apply underline hover:text-blue-500;
+}
+
+:is(div, p) > code {
+  @apply font-mono;
+  color: #dd4a68;
+}
+.nuxt-content-highlight {
+  @apply relative;
+}
+
+.nuxt-content-highlight span.filename {
+  @apply absolute right-4 top-4 px-1 font-mono bg-white;
+}

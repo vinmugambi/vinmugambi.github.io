@@ -11,65 +11,62 @@ tags:
   - "Flexbox"
 ---
 
-Business applications sometime need your to generate documents for various reasons including reporting, legal, automation. If you want the documents to be lightweight, viewed on any platform, and be ready for printing then PDf format would be the best choice.
+Two months ago, a corporate customer asked me for a proforma invoice. She wanted her company to approve our charges before she paid, that way she could easily claim her expenses back. Since I never had to write such a document before, the first thing I did is look up a template on Google docs. I didn't find one I liked, so I decided to craft my own. I asked her to give me at least 2 hours. Every step of the way I thought this could be automated, perhaps with Excel functions but since I didn't know how, it would be easier to do it manually.
 
-Sometim
+Two weeks later, another customer requested for a similar document. After using an hour writing the document, generating this kind of document automatically seemed a worthy cause
 
-There are many ways to perform the task, but if familiar with react js you'll find the React PDF renderer way among the easiest.
+- Minimize errors - I don't have to remember if you changed the due date and the invoice number on the template
+- Brand - Documents will conform to the brand.
+- And of course I could save a lot of time.
 
-## why react
+## Choices
 
-- familiar syntax
-- dynamic
+To me, this problem looked like a nail to my JavaScript hammer and I quickly ruled out proprietary solutions like Office and Quickbooks.
 
-In this post we make a create a react component that generates invoice. We'll constraint ourselves to the logic concerning view to avoid being caught up describing business processes surrounding invoice generation.
+The first library that I came across on was `PDFlib`. It canvas-like API scared me, I needed a more familiar approach, one in which I could write the document using HTML elements. I later landed on `react-pdf` and I was impressed by the examples.
 
-## Prerequisites
+## What we'll build
+
+In this article, I will show you how to make a react component that generates this PDF proforma invoice.
+
+<nuxt-img src="/proforma.png"></nuxt-img>
+
+I'll omit the business logic that precedes invoices and instead focus on getting the invoice to look exactly like this.
+
+### Prerequisites
+
+You'll need to have these software installed.
 
 - Node js
-- A chromium-based browser e.g chrome, edge, or chromium
+- A chromium-based web browser e.g chrome, edge, or chromium
 - Yarn package manager. Visit https://yarnpkg.com/getting-started/install to install.
+- Code editor - I recommend Visual Studio code.
 
-### Code
+You won't be able to follow along if you don't know some JavaScript, Typescript, CSS, and React.js.
 
-The example project's code is from this exact blog
+You can quickly the code for the static invoice at [the react-pdf playground](https://t.ly/zPxn)
 
-## Decide how the invoice looks
+Now that we know how we want the proforma invoice to look like, lets begin.
 
-As suggested in the react docs start with a static version of your component. That neither has data or props. You might get this from your designer or business teams.
+## Install a fresh react project
 
-we are going to write an invoice that looks like this.
-<nuxt-img src="/logo.png"></nuxt-img>
-
-<!-- ![](~assets/target.png) -->
-
-## Develop the static version
-
-Now that we know what we want in our invoice let's begin creating it;
-
-Install a fresh react project using npm
+Install a fresh react typescript from the terminal/cmd
 
 ```bash
 yarn create react-app invoice --template typescript
 ```
 
-delete every file in src folder except `index.js`
-
-install the react pdf module.
-
-> I recommend using yarn to install the the rest of the modules. Installing the `@react-pdf/renderer` using npm causes peer dependency mismatch errors with the react version 18.
+Then, install the react-pdf/renderer module using yarn
 
 ```bash
 yarn add @react-pdf/renderer
 ```
 
-we'll be using typescript to type-check the invoice data structure so install these dependencies with the development flag.
+<pitfall>
+As of November 2022, installing the <code>@react-pdf/renderer</code> using npm causes peer dependency mismatch errors with react version 18.
+</pitfall>
 
-```bash
-yarn add -D  typescript @types/node @types/react @types/react-dom
-```
-
-lets start with the header. create a file named `app.tsx` file in the `src` folder. create the `App` and `Invoice` component as follows.
+Lets start with the header. Create a file named `app.tsx` file in the `src` folder. Add the `App` and `Invoice` to it.
 
 ```jsx{}[app.tsx]
 
@@ -99,51 +96,71 @@ function Invoice() {
 }
 ```
 
-Start the development server,
+Now create the `index.tsx` file. This file acts as the React entry file.
+
+```jsx{}[index.tsx]
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./app";
+
+const root = ReactDOM.createRoot(document.getElementById("root") as Element);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+```
+
+Run the development server, from the terminal
 
 ```bash
 yarn start
 ```
 
 This will start the server and open the url in your default browser.
-If you see something like this, then we are set
+If everything went well, you will see this in the browser.
 
-![](./empty.png)
+<nuxt-img src="/empty.png"></nuxt-img>
 
-> gotcha:: The `PDFViewer` may not work as expected in Firefox, depending your firefox settings. I recommend you use a Chromium based browser for this guide.
+<pitfall> 
+The `PDFViewer`, the component responsible for the pdf widget, may not work as expected in Firefox. If having problems, use a chromium-based browser like chrome or edge.
+</pitfall>
 
-Here we supply `Page` element with the size prop. This ensures the generated document will be of correct size.
+Here specified that out pages should be of the legal letter size by supplying the size prop to `Page`.
+
+### Overview of @react-pdf/renderer
+
+This library make is easy to create using the Familiar React.js API. Although it does not support the entire HTML and CSS spec, it comes with everything I think you would ever need to create any document.
+
+We'll use the following components to make the invoice.
+
+- `Text` a block level text container. all text must be wrapped within this element
+- `View` a general block level element that is equivalent to a HTML `div`
+- `Image` equivalent to HTML `img`
+- `Page` equivalent to HTML `body`
+- `Document` denotes a PDF document. equivalent to HTML `html` element.
+- `PDFViewer` to enable display PDF in a web browser
 
 ### Styling
 
-React-pdf supports some css properties that make it easier to reason about document. However, it doesn't support the entire CSS spec.
+React-pdf supports almost all CSS properties that are used to style text.
 
-Fonts: It supports courier (monotype), and Times-Roman (serif), and Helvetica (sans-serif) variants. we'll use this for now. Later we'll see how one can use google fonts.
+It comes with three inbuilt fonts: courier (monotype), and Times-Roman (serif), and Helvetica (sans-serif).
 
-change the `index.js` file to look like this
+But most important, is that it supports position, margin, padding, and flex properties giving you power to create amazing documents.
 
-```jsx
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./app.tsx";
+It also provides a `Stylesheet` module that enables creation of reusable styles.
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-```
+### Adding the header
 
-## Adding the header
+Download this image and copy it into the `public` folder located in the root of the react project.
 
-Download this image and copy it into the public folder found in the root of the project.
+<nuxt-img src="/logo.png" width="120"></nuxt-img>
 
-![logo](./logo.png)
+Add a header component and render it in invoice, like this.
 
-create the header component and render it in invoice, like this.
-
-```jsx
+```jsx{}[app.jsx]
 import {
   Document,
   Image,
@@ -152,6 +169,14 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
+
+export default function App() {
+  return (
+      <PDFViewer width="100%" height="900">
+        <Invoice />
+      </PDFViewer>
+  );
+}
 
 function Header() {
   return (
@@ -216,24 +241,14 @@ function Invoice() {
 }
 ```
 
-## components
+<pitfall>
+As opposed what happens in CSS, the <code>flex-direction</code> property defaults to <code>column</code> in react-pdf/renderer.
 
-React-pdf will only render elements it recognises. It comes with a few Components that make sense in the context of PDF documents. We'll be using
+You'll also notice that I am changing the `font-family` to render <strong>bold </strong> text. This is because the default fonts weights, this means set `font-width` styles will be ignores.
 
-- `Text` a block level text component (all text must be a child of this component)
-- `View` a general block level element (equivalent to a div)
-- `Image` equivalent to HTML img
-- `Page` equivalent to HTML body
-- `Document` denotes a PDF document. equivalent to HTML html element.
+</pitfall>
 
-> **Gotcha ::**
-> The flex-direction property defaults to column in pdf renderer, opposite to what happens in browsers. This got me pulling hairs for some hours.
-
-We'll heavily rely on flex to design the invoice.
-
-You'll notice that I am setting the font-family to render bold and italic text. This is because the default fonts weights are installed as individual fonts.
-
-Before we continue, let's clean the inline css.
+Before we continue, let's clean the inline css and use the library's `Stylesheet` helper to create reusable styles.
 
 ```jsx
 import {
@@ -245,6 +260,14 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
+
+export default function App() {
+  return (
+    <PDFViewer width="100%" height="900">
+      <Invoice />
+    </PDFViewer>
+  );
+}
 
 var styles = StyleSheet.create({
   page: {
@@ -304,7 +327,7 @@ function Header() {
 }
 ```
 
-React pdf library provides the stylesheet modules which can be use to write non-inline CSS. It returns an object with the same structure as the arguments supplied to it. You can extend the styles, as we have done here.
+`StyleSheet.create()` returns a regular JavaScript that can be extended using the spread syntax, like we have done here.
 
 ```jsx
 <Text style={{ ...styles.textRight, textTransform: "uppercase" }}>
@@ -312,20 +335,23 @@ React pdf library provides the stylesheet modules which can be use to write non-
 </Text>
 ```
 
+<sink>
 You should not rush to plan your styles top bottom. I generally start by using inline css to style my modules. Repetitive and long inline styles make good candidates for merging.
 
 I use a similar corollary, for files and components. I am comfortable writing many components in the same file until they start looking misplaced. I'm reluctant to create new files unless I feel they are warranted. I don't plan the file structure in advance. I let the use case guide me.
 
-> Actually is the one thing I love `jsx` compared to Vue's template files `.vue`. `jsx` allows you write components the way you would write js functions. And you can put as many you like in a single. `.vue` forces to plan ahead.
+Actually is the one thing I love `jsx` compared to Vue's template files `.vue`. `jsx` allows you write components the way you would write js functions. And you can put as many you like in a single. `.vue` forces to plan ahead.
 
-At the moment the `Invoice`, is starting to feel that way.
+</sink>
+
+At the moment the `Invoice`, is starting to look out of place.
 First lets look at the header component. to me it seems like something that will appear on every pdf document, except for the 'INVOICE' title. We can refactor it to make it a generic header that accept a title prop.
 
 Next, look at how we are using `PDFViewer` in app. I feel that the app should know little about implementation details.
 
 Let's refactor to resolve this. Create a new file and call it `pdf-document.tsx`. Copy this into it.
 
-```jsx
+```jsx{}[pdf-document.tsx]
 import {
   Document,
   Image,
@@ -406,7 +432,7 @@ function Header({ title }: { title?: string }) {
 
 Now create a `invoice.tsx` and use the `PDFDocument` as a template in the `Invoice` template.
 
-```jsx
+```jsx{}[invoice.tsx]
 import { Text, View } from "@react-pdf/renderer";
 import React from "react";
 import PDFDocument from "./pdf-document";
@@ -424,7 +450,7 @@ export default function Invoice() {
 
 Change the `app.tsx` to reflect the changes.
 
-```jsx
+```jsx{}[app.tsx]
 import React from "react";
 import Invoice from "./invoice";
 
@@ -432,13 +458,10 @@ export default function App() {
   return <Invoice />;
 }
 ```
+Now that everything is cleaner, let's build to the top section that shows the invoice details.
+Add the details component into the `invoice.tsx`
 
-everything is cleaner now.
-
-let now move to the top tab that shows the invoice details.
-add the details component into the `invoice.tsx`
-
-```jsx
+```jsx{}[invoice.tsx]
 export default function Invoice() {
   return (
     <PDFDocument>
@@ -516,76 +539,18 @@ function Details() {
 }
 ```
 
-We create a table/grid like structure using the CSS flex box.
-To make the length of the children of a flex element equal we set the flex property like `flex: 1 1 0%`. The first `1` is the `flex-grow` , a value of 1 tells the object to expand to occupy the available space, the second `1` is the `flex-shrink` property and a value of 1 allows it to shrink when necessary, the `0%` is the `flex-basis` property, it dictates the ideal size of the element.
+Here, we create a table/grid like structure using the CSS flex box.
 
-We use `Object.assign()` to combine styles, mimicking what would do, if they were using a CSS utility library like tailwind.
+<sink>
+To make the width of the children of a flex element equal we set the flex property on each child `flex: 1 1 0%`. Robin Rendle's article <a href="https://css-tricks.com/understanding-flex-grow-flex-shrink-and-flex-basis">Understanding flex-grow, flex-shrink, and flex-basis</a> is my best reference for the CSS <code>flex</code> property.
 
-add the rest of the sections. Change the styles in `invoice.tsx` to
+</sink>
 
-```jsx
-const styles = StyleSheet.create({
-  section: {
-    marginTop: "4vh",
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-  },
-  equalSize: {
-    flex: "1 1 0%",
-  },
-  halfWidth: {
-    width: "50%",
-  },
-  quarterWidth: {
-    width: "25%",
-  },
-  width7: {
-    width: "7%",
-  },
-  width9: {
-    width: "9%",
-  },
-  width16: {
-    width: "16%",
-  },
-  tableCell: {
-    padding: "4",
-  },
-  pushRight: {
-    marginLeft: "auto",
-  },
-  dt: {
-    fontSize: "8pt",
-    marginBottom: "4pt",
-  },
-  sectionHeading: {
-    backgroundColor: "#eee",
-    justifyContent: "center",
-    paddingVertical: "4",
-  },
-  tableRow: {
-    borderBottom: "1px solid #ccc",
-  },
-  bold: {
-    fontFamily: "Helvetica-Bold",
-  },
-  justifyEnd: {
-    justifyContent: "flex-end",
-  },
-  paragraph: {
-    marginBottom: 10,
-  },
-  alignRight: {
-    textAlign: "right",
-  },
-});
-```
+We use `Object.assign()` to combine styles, mimicking what we would do if we were using a CSS utility library.
 
-add the line items, payment method and notes section:
+To conclude, we'll add the remaining sections using the same techniques.
 
-```jsx
+```jsx{}[invoice.tsx]
 export function BankDetails() {
   return (
     <View style={styles.section}>
@@ -790,8 +755,66 @@ function Notes() {
 }
 ```
 
-We use the same tactic to develop the desired interface.
+And finally, change the styles to
 
-## Design the invoice data structure
+```jsx{}[invoice.tsx]
+const styles = StyleSheet.create({
+  section: {
+    marginTop: "4vh",
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  equalSize: {
+    flex: "1 1 0%",
+  },
+  halfWidth: {
+    width: "50%",
+  },
+  quarterWidth: {
+    width: "25%",
+  },
+  width7: {
+    width: "7%",
+  },
+  width9: {
+    width: "9%",
+  },
+  width16: {
+    width: "16%",
+  },
+  tableCell: {
+    padding: "4",
+  },
+  pushRight: {
+    marginLeft: "auto",
+  },
+  dt: {
+    fontSize: "8pt",
+    marginBottom: "4pt",
+  },
+  sectionHeading: {
+    backgroundColor: "#eee",
+    justifyContent: "center",
+    paddingVertical: "4",
+  },
+  tableRow: {
+    borderBottom: "1px solid #ccc",
+  },
+  bold: {
+    fontFamily: "Helvetica-Bold",
+  },
+  justifyEnd: {
+    justifyContent: "flex-end",
+  },
+  paragraph: {
+    marginBottom: 10,
+  },
+  alignRight: {
+    textAlign: "right",
+  },
+});
+```
 
-## Separate the view logic from business logic
+In the next post, we will dynamically generate a PDF proforma invoice on the server by replacing all the static data with props.

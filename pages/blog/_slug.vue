@@ -38,7 +38,7 @@ export default {
 
 <style  scoped>
 article {
-  @apply lg:max-w-3xl
+  @apply lg:max-w-3xl;
 }
 
 article p {
@@ -56,6 +56,31 @@ article header h1 {
 
 article :is(h2, h3, h4, h5) {
   @apply font-bold scroll-mt-8 mt-6 mb-2;
+}
+
+article h2 {
+  @apply text-3xl;
+}
+
+article h2 {
+  @apply text-2xl;
+}
+
+article ul {
+  @apply list-disc list-inside pl-4;
+}
+
+article img,
+figure {
+  @apply rounded border my-4;
+}
+
+article a {
+  @apply underline hover:text-blue-500;
+}
+
+article pre.line-numbers {
+  @apply rounded;
 }
 </style>
 
