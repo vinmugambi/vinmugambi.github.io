@@ -11,13 +11,13 @@ tags:
   - "Flexbox"
 ---
 
-Two months ago, a corporate customer asked me for a proforma invoice. She wanted her company to approve our charges before she paid, that way she could easily claim her expenses back. Since I never had to write such a document before, the first thing I did is look up a template on Google docs. I didn't find one I liked, so I decided to craft my own. I asked her to give me at least 2 hours. Every step of the way I thought this could be automated, perhaps with Excel functions but since I didn't know how, it would be easier to do it manually.
+Two months ago, a corporate customer asked me for a proforma invoice. She wanted her company's accountant to approve our service charges before she paid, that way she could easily claim her expenses back. Since I never had to write such a document before, the first thing I did is look up a template on Google docs. I didn't find one I liked, so I decided to craft my own. A tedious task indeed, I had to ask her to wait for at least at least 2 hours. Every step of the way I thought this could be automated, perhaps with Excel functions but since I didn't know how, it would be easier to do it manually.
 
-Two weeks later, another customer requested for a similar document. After using an hour writing the document, generating this kind of document automatically seemed a worthy cause
+Two weeks later, another customer requested for a similar document. After spending about an hour writing it, automatically generating this kind of document seemed a worthy cause
 
-- Minimize errors - I don't have to remember if you changed the due date and the invoice number on the template
-- Brand - Documents will conform to the brand.
-- And of course I could save a lot of time.
+- It would minimize errors - I don't have to worry if I changed the due date and the invoice number on the template
+- It will make it easy to write that conform to our brand
+- It would save me a lot of time
 
 ## Choices
 
@@ -56,6 +56,12 @@ Install a fresh react typescript from the terminal/cmd
 yarn create react-app invoice --template typescript
 ```
 
+Navigate to the creates `invoice` folder
+
+```bash
+cd invoice
+```
+
 Then, install the react-pdf/renderer module using yarn
 
 ```bash
@@ -65,6 +71,12 @@ yarn add @react-pdf/renderer
 <pitfall>
 As of November 2022, installing the <code>@react-pdf/renderer</code> using npm causes peer dependency mismatch errors with react version 18.
 </pitfall>
+
+Then, open the `invoice` folder in your favourite code editor. For vs code users enter this in your terminal
+
+```bash
+code .
+```
 
 Lets start with the header. Create a file named `app.tsx` file in the `src` folder. Add the `App` and `Invoice` to it.
 
@@ -131,7 +143,7 @@ Here specified that out pages should be of the legal letter size by supplying th
 
 ### Overview of @react-pdf/renderer
 
-This library make is easy to create using the Familiar React.js API. Although it does not support the entire HTML and CSS spec, it comes with everything I think you would ever need to create any document.
+The @react-pdf/renderer library makes is easy to create PDF using the familiar React.js API. Although it does not support the entire HTML and CSS spec, it comes with everything you would ever need to create professional document.
 
 We'll use the following components to make the invoice.
 
@@ -144,13 +156,9 @@ We'll use the following components to make the invoice.
 
 ### Styling
 
-React-pdf supports almost all CSS properties that are used to style text.
+React-pdf supports almost all CSS properties that are used to style text. It also comes bundled with three fonts: courier (monospace), and Times-Roman (serif), and Helvetica (sans-serif).
 
-It comes with three inbuilt fonts: courier (monotype), and Times-Roman (serif), and Helvetica (sans-serif).
-
-But most important, is that it supports position, margin, padding, and flex properties giving you power to create amazing documents.
-
-It also provides a `Stylesheet` module that enables creation of reusable styles.
+Most importantly, it supports position, margin, padding, and flex properties giving you power to create amazing documents with minimum effort.
 
 ### Adding the header
 
@@ -211,10 +219,10 @@ function Header() {
         <Text style={{ marginLeft: "auto", textTransform: "uppercase" }}>
           Tenda Soft Ltd
         </Text>
-        <Text style={{ marginLeft: "auto", fontFamily: "Helvetica-Oblique" }}>
+        <Text style={{ marginLeft: "auto"}}>
           Lusaka rd, Nairobi, Kenya
         </Text>
-        <Text style={{ marginLeft: "auto", fontFamily: "Helvetica-Oblique" }}>
+        <Text style={{ marginLeft: "auto"}}>
           +254790589898
         </Text>
       </View>
@@ -244,11 +252,11 @@ function Invoice() {
 <pitfall>
 As opposed what happens in CSS, the <code>flex-direction</code> property defaults to <code>column</code> in react-pdf/renderer.
 
-You'll also notice that I am changing the `font-family` to render <strong>bold </strong> text. This is because the default fonts weights, this means set `font-width` styles will be ignores.
+You'll also notice that I am changing the `font-family` to render <strong>bold </strong> text. This is because the fonts weights are provided as individual fonts , this means set `font-width` styles will be ignores.
 
 </pitfall>
 
-Before we continue, let's clean the inline css and use the library's `Stylesheet` helper to create reusable styles.
+Before we continue, let's clean the inline css by using the `Stylesheet` helper to create reusable styles.
 
 ```jsx
 import {
@@ -336,20 +344,14 @@ function Header() {
 ```
 
 <sink>
-You should not rush to plan your styles top bottom. I generally start by using inline css to style my modules. Repetitive and long inline styles make good candidates for merging.
-
-I use a similar corollary, for files and components. I am comfortable writing many components in the same file until they start looking misplaced. I'm reluctant to create new files unless I feel they are warranted. I don't plan the file structure in advance. I let the use case guide me.
-
-Actually is the one thing I love `jsx` compared to Vue's template files `.vue`. `jsx` allows you write components the way you would write js functions. And you can put as many you like in a single. `.vue` forces to plan ahead.
-
+I don't plan my styles ahead, that is why I keep them inline as long they are short and not repetitive.
 </sink>
 
-At the moment the `Invoice`, is starting to look out of place.
-First lets look at the header component. to me it seems like something that will appear on every pdf document, except for the 'INVOICE' title. We can refactor it to make it a generic header that accept a title prop.
+I'm reluctant to create a new file for every new component I think of. I have a habit of writing components in a single file until they start to look misplaced and at the moment the `Invoice`, looks just that.
 
-Next, look at how we are using `PDFViewer` in app. I feel that the app should know little about implementation details.
+Looking at the header component, it seems like something I want to appear on every pdf document, except for the 'INVOICE' title. We can refactor it to a generic component that accepts a title prop.
 
-Let's refactor to resolve this. Create a new file and call it `pdf-document.tsx`. Copy this into it.
+Next, the way we are using `PDFViewer` in app doesn't look right. We are making `App` aware of how PDF are rendered, a detail should be none of its business. To resolve this, we create a new file and call it `pdf-document.tsx` to hold the pdf viewing logic and template.
 
 ```jsx{}[pdf-document.tsx]
 import {
@@ -458,6 +460,7 @@ export default function App() {
   return <Invoice />;
 }
 ```
+
 Now that everything is cleaner, let's build to the top section that shows the invoice details.
 Add the details component into the `invoice.tsx`
 
@@ -548,7 +551,7 @@ To make the width of the children of a flex element equal we set the flex proper
 
 We use `Object.assign()` to combine styles, mimicking what we would do if we were using a CSS utility library.
 
-To conclude, we'll add the remaining sections using the same techniques.
+To conclude, we'll add the remaining sections using the techniques we learnt.
 
 ```jsx{}[invoice.tsx]
 export function BankDetails() {
