@@ -213,7 +213,7 @@ function Header() {
           fontFamily: "Helvetica-Bold",
         }}
       >
-        INVOICE
+        PROFORMA INVOICE
       </Text>
       <View>
         <Text style={{ marginLeft: "auto", textTransform: "uppercase" }}>
@@ -322,7 +322,7 @@ function Header() {
         ></Image>
       </View>
 
-      <Text style={styles.title}>INVOICE</Text>
+      <Text style={styles.title}>PROFORMA INVOICE</Text>
       <View>
         <Text style={{ ...styles.textRight, textTransform: "uppercase" }}>
           Tenda Soft Ltd
@@ -406,7 +406,7 @@ export default function PDFDocument({
 }
 
 function Header({ title }: { title?: string }) {
-  title = title || "invoice";
+  title = title || "Proforma Invoice";
   return (
     <View style={styles.rowBetween}>
       <View>
