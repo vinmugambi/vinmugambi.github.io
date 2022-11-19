@@ -66,8 +66,16 @@ article h2 {
   @apply text-2xl;
 }
 
+article ul,
+ol {
+  @apply list-inside pl-4;
+}
+
 article ul {
-  @apply list-disc list-inside pl-4;
+  @apply list-disc;
+}
+article ol {
+  @apply list-decimal;
 }
 
 article img,

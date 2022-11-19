@@ -13,7 +13,7 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/icon.png' }],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -35,12 +35,12 @@ export default {
     meta: {
       name: 'Mugambi',
       author: 'Vincent Mugambi',
-      description: 'Personal Website of Vincent Mugambi',
+      description: 'Vincent Mugambi',
     },
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@nuxt/content', '@nuxt/http', "@nuxt/image"],
+  modules: ['@nuxt/content', '@nuxt/http', '@nuxt/image'],
   content: {
     liveEdit: false,
   },
@@ -53,12 +53,17 @@ export default {
         autoprefixer: {},
       },
     },
+    extend(config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+    },
   },
   hooks: {
     'content:file:beforeInsert': (document) => {
       if (document.extension === '.md') {
         const stats = require('reading-time')(document.text)
-        document.readingTime = stats.text;
+        document.readingTime = stats.text
       }
     },
   },

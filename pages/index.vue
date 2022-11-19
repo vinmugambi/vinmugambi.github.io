@@ -7,7 +7,7 @@ export default {
       .only(["title", "slug", "updatedAt", "tagline", "readingTime"])
       .sortBy("createdAt", "asc")
       .fetch();
-
+    
     return { articles };
   },
   methods: {
