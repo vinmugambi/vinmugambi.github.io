@@ -71,12 +71,13 @@ To configure VS code debugger for the project. Create a `.vscode/launch.json` fi
 5. Set a breakpoint on or `.js` file, the script part any `.vue` by adding a `debugger` line where you want your code to stop.
 6. Reload the concerned page, to trigger a breakpoint.
 
-<nuxt-picture src="/debug.gif"></nuxt-picture>
+<img format="gif" src="/demo.gif"></img>
 
 <pitfall>
 
 There are two things I haven't figured out yet:
-- Accurately setting breakpoints using VS code interface - When you set breakpoints using the red mark beside the line number, the code breaks at a different place. See [Debugging *.vue files puts breakpoints in wrong place](https://github.com/vuejs/vetur/issues/1399)
+
+- Accurately setting breakpoints using VS code interface - When you set breakpoints using the red mark beside the line number, the code breaks at a different place. See [Debugging \*.vue files puts breakpoints in wrong place](https://github.com/vuejs/vetur/issues/1399)
 - Bounding breakpoints in `.vue` files to the server debugger - This makes it hard to debug Nuxt server-side functions like `asyncData` and `fetch`
 
 After grappling with these issues for almost a day, I decided let them go, instead opting to set breakpoints manually, the JavaScript way, by inserting a `debugger` statement after the line I want to debug.

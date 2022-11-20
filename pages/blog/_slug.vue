@@ -1,3 +1,17 @@
+<script>
+import { formatDate } from "@/lib/utils.js";
+
+export default {
+  async asyncData({ $content, params }) {
+    const page = await $content("blog", params.slug).fetch();
+    return { page };
+  },
+  methods: {
+    formatDate,
+  },
+};
+</script>
+
 <template>
   <article>
     <header>
@@ -21,20 +35,6 @@
     <nuxt-content :document="page" />
   </article>
 </template>
-
-<script>
-import { formatDate } from "@/lib/utils.js";
-
-export default {
-  async asyncData({ $content, params }) {
-    const page = await $content("blog", params.slug).fetch();
-    return { page };
-  },
-  methods: {
-    formatDate,
-  },
-};
-</script>
 
 <style  scoped>
 article {
