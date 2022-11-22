@@ -11,19 +11,29 @@ tags:
   - "Flexbox"
 ---
 
-Two months ago, a corporate customer asked me for a proforma invoice. She wanted her company's accountant to approve our service charges before she paid, that way she could easily claim her expenses back. Since I never had to write such a document before, the first thing I did is look up a template on Google docs. I didn't find one I liked, so I decided to craft my own. A tedious task indeed, I had to ask her to wait for at least at least 2 hours. Every step of the way I thought this could be automated, perhaps with Excel functions but since I didn't know how, it would be easier to do it manually.
+<notices></notices>
 
-Two weeks later, another customer requested for a similar document. After spending about an hour writing it, automatically generating this kind of document seemed a worthy cause
+<notice>
+To get the most out of this guide you should be familiar with JavaScript, React.js, and CSS. You must also have Node.js, Yarn, and  Chrome or any other chromium based browser installed in your computer. 
+</notice>
+<notice>
+View a demo and code for this guide at <a href="https://t.ly/zPxn"> the react-pdf playground </a>
 
-- It would minimize errors - I don't have to worry if I changed the due date and the invoice number on the template
-- It will make it easy to write that conform to our brand
-- It would save me a lot of time
+</notice>
+
+Two months ago, a customer asked me for a proforma invoice. She wanted her company's accountant to approve our charges before she paid, that way she would avoid issues when claiming the money back from the company. Yet to find a template that I liked half an hour later, I decided to make my own using LibreOffice. It took me three good hours to prepare the invoice.
+
+It was not until two weeks later, when another customer requested a similar document, that I considered automating this task.
+
+- I would be less worried of errors - Some data like invoice number and dates would be generated automatically
+- Documents would conform to the brand with minimum effort
+- It would save me lots of time.
 
 ## Choices
 
-To me, this problem looked like a nail to my JavaScript hammer and I quickly ruled out proprietary solutions like Office and Quickbooks.
+This problem looked like one that I could solve with JavaScript even though it wasn't clear how.
 
-The first library that I came across on was `PDFlib`. It canvas-like API scared me, I needed a more familiar approach, one in which I could write the document using HTML elements. I later landed on `react-pdf` and I was impressed by the examples.
+The first library that I came across on was `PDFlib`. I was quick to rule it out because of it Canvas-like API, as I feared it would take me lots of time to achieve the structure I had in mind. I needed a more familiar approach, one in which I could write the document using HTML elements. I later landed on `react-pdf` and I was impressed by the examples.
 
 ## What we'll build
 
@@ -31,24 +41,11 @@ In this article, I will show you how to make a react component that generates th
 
 <nuxt-img src="/proforma.png"></nuxt-img>
 
-I'll omit the business logic that precedes invoices and instead focus on getting the invoice to look exactly like this.
-
-### Prerequisites
-
-You'll need to have these software installed.
-
-- Node js
-- A chromium-based web browser e.g chrome, edge, or chromium
-- Yarn package manager. Visit https://yarnpkg.com/getting-started/install to install.
-- Code editor - I recommend Visual Studio code.
-
-You won't be able to follow along if you don't know some JavaScript, Typescript, CSS, and React.js.
-
-You can quickly the code for the static invoice at [the react-pdf playground](https://t.ly/zPxn)
-
-Now that we know how we want the proforma invoice to look like, lets begin.
+I'll omit the business logic that precedes invoices like order management and instead focus on getting the invoice to look exactly like this.
 
 ## Install a fresh react project
+
+Now that its clear what we want, lets begin.
 
 Install a fresh react typescript from the terminal/cmd
 
@@ -72,11 +69,7 @@ yarn add @react-pdf/renderer
 As of November 2022, installing the <code>@react-pdf/renderer</code> using npm causes peer dependency mismatch errors with react version 18.
 </pitfall>
 
-Then, open the `invoice` folder in your favourite code editor. For vs code users enter this in your terminal
-
-```bash
-code .
-```
+Then, open the `invoice` folder in your favourite code editor.
 
 Lets start with the header. Create a file named `app.tsx` file in the `src` folder. Add the `App` and `Invoice` to it.
 
@@ -145,14 +138,14 @@ Here specified that out pages should be of the legal letter size by supplying th
 
 The @react-pdf/renderer library makes is easy to create PDF using the familiar React.js API. Although it does not support the entire HTML and CSS spec, it comes with everything you would ever need to create professional document.
 
-We'll use the following components to make the invoice.
+We'll use these components to make the invoice.
 
-- `Text` a block level text container. all text must be wrapped within this element
-- `View` a general block level element that is equivalent to a HTML `div`
-- `Image` equivalent to HTML `img`
-- `Page` equivalent to HTML `body`
-- `Document` denotes a PDF document. equivalent to HTML `html` element.
-- `PDFViewer` to enable display PDF in a web browser
+- `Text` : A block level text container. Text not wrapped within this element will not appear on the document.
+- `View` : A general block level element that is equivalent to a HTML `div`
+- `Image` : Equivalent to HTML `img`
+- `Page` : Equivalent to HTML `body`
+- `Document` : Denotes a PDF document. equivalent to HTML `html` element.
+- `PDFViewer` : Utility to preview PDF documents in the browser.
 
 ### Styling
 
@@ -252,7 +245,7 @@ function Invoice() {
 <pitfall>
 As opposed what happens in CSS, the <code>flex-direction</code> property defaults to <code>column</code> in react-pdf/renderer.
 
-You'll also notice that I am changing the `font-family` to render <strong>bold </strong> text. This is because the fonts weights are provided as individual fonts , this means set `font-width` styles will be ignores.
+You'll also notice that I am changing the `font-family` to render <strong>bold </strong> text. This is because the fonts weights are provided as individual fonts , this means set `font-width` styles have no effect.
 
 </pitfall>
 
@@ -545,8 +538,7 @@ function Details() {
 Here, we create a table/grid like structure using the CSS flex box.
 
 <sink>
-To make the width of the children of a flex element equal we set the flex property on each child `flex: 1 1 0%`. Robin Rendle's article <a href="https://css-tricks.com/understanding-flex-grow-flex-shrink-and-flex-basis">Understanding flex-grow, flex-shrink, and flex-basis</a> is my best reference for the CSS <code>flex</code> property.
-
+To make the width of the children of a flex element equal we set the flex property on each child `flex: 1 1 0%`. To deeply understand the <code>flex</code> property consider reading Robin Rendle's article <a href="https://css-tricks.com/understanding-flex-grow-flex-shrink-and-flex-basis">Understanding flex-grow, flex-shrink, and flex-basis</a> 
 </sink>
 
 We use `Object.assign()` to combine styles, mimicking what we would do if we were using a CSS utility library.

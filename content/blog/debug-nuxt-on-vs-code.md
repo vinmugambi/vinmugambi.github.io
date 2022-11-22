@@ -4,17 +4,21 @@ draft: true
 tagline: "Spend less time hunting bugs in your Nuxt.js project"
 ---
 
-One thing that make Visual Studio formidable for JavaScript development is its first class support for JS debugging. With a debugger, you can stop code execute execution at a specific line and watch your programs state at that point or even execute extra code against it, saving your time as compared to using `console.log`. That said, among the first things I do after I create a new JavaScript project is to make it debuggable on Visual Studio Code.
+<notice>
+This post is only useful if you are familiar with Vue.js, Nuxt.js, JavaScript and Visual Studio Code. For this guide to work fo you, you must have Chrome installed in your computer.
+</notice>
 
-`.vue` files require compilation unlike plain JS files, which makes it a little bit harder to debug them accurately. Nuxt runs `.vue` files on the server which further complicates the issue. In this article, I show you how to set up VS code debugger for your nuxt version 2 projects.
+One thing that make Visual Studio formidable for JavaScript development is its first class support for JS debugging. With a debugger, you can stop code execute execution at a specific line and watch your program's state or even execute extra code against it, saving your time as compared to using `console.log`. That said, among the first things I do after I create a new JavaScript project is to make it debuggable on Visual Studio Code.
+
+`.vue` files require compilation unlike plain JS files, which makes it a little bit harder to debug them accurately. Nuxt runs `.vue` files on the server which further complicates the issue. In this article, I show you how to set up VS code debugger for your Nuxt (version 2) projects.
 
 <sink> 
-Although a better Nuxt 3 has been released, I still recommend using the older but more stable and better documented Nuxt 2, especially to those new to Nuxt.
+Although the newly released Nuxt 3 promises to be better at almost everything, I would still recommend using the older Nuxt 2 for its better documentation and stability
 </sink>
 
 ## Configure the debugger
 
-The first step to debugging a nuxt project is to configure how webpack generates source maps . To do this, add an `extend` function to the `build` object in your `nuxt.config.js` file.
+The first step to debugging a nuxt project is to configure how webpack generates source maps. To do this, add an `extend` function to the `build` object in your `nuxt.config.js` file.
 
 ```js{}[nuxt.config.js]
 export default {
@@ -40,10 +44,7 @@ To configure VS code debugger for the project. Create a `.vscode/launch.json` fi
       "type": "chrome",
       "request": "launch",
       "name": "Nuxt:client",
-      "url": "http://localhost:3000",
-      "sourceMapPathOverrides": {
-        "webpack:///*": "${workspaceRoot}/*"
-      }
+      "url": "http://localhost:3000"
     },
     {
       "type": "node",
