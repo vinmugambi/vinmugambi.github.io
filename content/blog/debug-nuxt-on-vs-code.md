@@ -8,12 +8,12 @@ tagline: "Spend less time hunting bugs in your Nuxt.js project"
 This post is only useful if you are familiar with Vue.js, Nuxt.js, JavaScript and Visual Studio Code. For this guide to work fo you, you must have Chrome installed in your computer.
 </notice>
 
-One thing that make Visual Studio formidable for JavaScript development is its first class support for JS debugging. With a debugger, you can stop code execute execution at a specific line and watch your program's state or even execute extra code against it, saving your time as compared to using `console.log`. That said, among the first things I do after I create a new JavaScript project is to make it debuggable on Visual Studio Code.
+One thing that make Visual Studio formidable for JavaScript development is its first class support for JS debugging. A debugger allows you to pause code execution at a specific line and watch your program's state or even execute extra code against it. Among the first things I do after creating a new JavaScript project is to make it debuggable on Visual Studio Code.
 
-`.vue` files require compilation unlike plain JS files, which makes it a little bit harder to debug them accurately. Nuxt runs `.vue` files on the server which further complicates the issue. In this article, I show you how to set up VS code debugger for your Nuxt (version 2) projects.
+In this article, I will show you how I configure debugging on every Nuxt.js project I work on. `.vue` files require compilation unlike plain JS files, which makes it a little bit harder to debug them accurately. Nuxt runs `.vue` files on the server which further complicates the issue.
 
 <sink> 
-Although the newly released Nuxt 3 promises to be better at almost everything, I would still recommend using the older Nuxt 2 for its better documentation and stability
+The newly released Nuxt 3 promises a lot, but I still recommend using Nuxt 2 for its stability and good documentation.
 </sink>
 
 ## Configure the debugger

@@ -3,9 +3,9 @@ import { formatDate } from "@/lib/utils";
 
 export default {
   async asyncData({ $content }) {
-    const articles = await $content("blog")
-      .only(["title", "slug", "updatedAt", "tagline", "readingTime"])
-      .sortBy("createdAt", "asc")
+    const articles = await $content("brazil")
+      // .only(["title", "slug", "updatedAt", "tagline", "readingTime"])
+      // .sortBy("createdAt", "asc")
       .fetch();
     
     return { articles };
