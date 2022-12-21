@@ -1,8 +1,8 @@
 ---
 title: "Create PDF documents using React.js"
 tagline: "Learn how to generate ready to print documents the easy way"
-demo: "vinmugambi.github.io"
-code: "https://github.com"
+demo: "https://t.ly/zPxn"
+code: "https://t.ly/zPxn"
 createdAt: "2022-08-19"
 updatedAt: "2022-08-19"
 tags:
@@ -10,8 +10,6 @@ tags:
   - "React"
   - "Flexbox"
 ---
-
-<notices></notices>
 
 <notice>
 To get the most out of this guide you should be familiar with JavaScript, React.js, and CSS. You must also have Node.js, Yarn, and  Chrome or any other chromium based browser installed in your computer. 

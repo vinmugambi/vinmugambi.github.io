@@ -1,6 +1,6 @@
 ---
 title: "Debug a Nuxt.js project in VS code"
-draft: true
+draft: false
 tagline: "Spend less time hunting bugs in your Nuxt.js project"
 ---
 

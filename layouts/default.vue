@@ -44,7 +44,6 @@ export default {
 
 <style scoped>
 html * {
-  font-family: sans-serif;
   @apply text-lg;
 }
 </style>

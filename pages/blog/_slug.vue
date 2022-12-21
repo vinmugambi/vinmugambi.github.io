@@ -15,12 +15,16 @@ export default {
 <template>
   <article>
     <header>
-      <h1>{{ page.title }}</h1>
+      <h1 class="tracking-tighter">{{ page.title }}</h1>
       <p>{{ page.description }}</p>
 
       <dl>
-        <div class="flex space-x-2">
-          <dt>Posted on</dt>
+        <template v-if="page.draft">
+          <dt class="hidden">isDraft</dt>
+          <dd class="bg-red-100 px-1 py-0.5 text-xs inline-block">DRAFT</dd>
+        </template>
+        <div v-else class="flex space-x-2">
+          <dt>Last updated on</dt>
           <dd>{{ formatDate(page.updatedAt) }}</dd>
         </div>
 
@@ -59,11 +63,11 @@ article :is(h2, h3, h4, h5) {
 }
 
 article h2 {
-  @apply text-3xl;
+  @apply text-3xl mt-12;
 }
 
 article h2 {
-  @apply text-2xl;
+  @apply text-2xl tracking-tight;
 }
 
 article ul,

@@ -3,11 +3,11 @@ import { formatDate } from "@/lib/utils";
 
 export default {
   async asyncData({ $content }) {
-    const articles = await $content("brazil")
+    const articles = await $content("blog")
       // .only(["title", "slug", "updatedAt", "tagline", "readingTime"])
-      // .sortBy("createdAt", "asc")
+      .sortBy("createdAt", "desc")
       .fetch();
-    
+
     return { articles };
   },
   methods: {
@@ -43,12 +43,22 @@ export default {
           :key="article.slug"
         >
           <nuxt-link class="hover:text-gray-800" :to="`blog/${article.slug}`">
-            <h3 class="font-bold text-3xl mb-2">{{ article.title }}</h3>
+            <h3 class="font-bold text-2xl tracking-tight mb-2">
+              {{ article.title }}
+            </h3>
             <dl class="text-sm flex space-x-2 -ml-2">
-              <dt class="hidden">Posted on</dt>
-              <dd class="uppercase tracking-wide">
-                {{ formatDate(article.updatedAt) }}
-              </dd>
+              <template v-if="article.draft">
+                <dt class="hidden">isDraft</dt>
+                <dd class="bg-red-100 px-1 py-0.5 text-xs inline-block">
+                  DRAFT
+                </dd>
+              </template>
+              <template v-else>
+                <dt class="hidden">Posted on</dt>
+                <dd class="uppercase tracking-wide">
+                  {{ formatDate(article.updatedAt) }}
+                </dd>
+              </template>
               <dt class="hidden">Reading time</dt>
               <dd>{{ article.readingTime }}</dd>
             </dl>

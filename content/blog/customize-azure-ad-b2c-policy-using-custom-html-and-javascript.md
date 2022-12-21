@@ -1,4 +1,15 @@
-# Customize azure ad b2c policy using HTML and JavaScript.
+---
+title: "Customize Azure AD B2C policy using HTML and JavaScript"
+draft: true
+tagline: "Make your authentication look and work the way you want"
+code: "https://github.com/vinmugambi/azure-b2c-custom-html"
+demo: "https://github.com/vinmugambi/azure-b2c-custom-html"
+---
+
+<notice>
+Find the code for this tutorial at <a href="https://github.com/vinmugambi/azure-b2c-custom-html"> this github repo </a>
+
+</notice>
 
 Azure Active Directory authorization portal is what brought me to use Azure AD b2c over other identity management providers. However, the choice comes with a huge cost. Unlike firebase, Azure doesn't allow one to build their own user interfaces in their language of choice and doesn't provide sdks to interact with the AD server during authentication
 
