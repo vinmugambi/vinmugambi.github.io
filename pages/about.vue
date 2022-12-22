@@ -76,7 +76,6 @@
                 {{ formatDate(job.startDate) }} &mdash;
                 {{ formatDate(job.endDate) }}
               </i>
-              <em>{{ job.startDate }}</em>
             </div>
 
             <div class="opacity-90">
