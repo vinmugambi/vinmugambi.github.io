@@ -11,14 +11,14 @@ Find the code for this tutorial at <a href="https://github.com/vinmugambi/azure-
 </notice>
 
 <notice>
- This articles assumes fundamental understanding of Azure AD B2C. You'll need to first prepare your tenant for custom policies. If you have not done so follow [this tutorial by Microsoft](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
+ This articles assumes fundamental understanding of Azure AD B2C custom policies.
 </notice>
 
-To determine how your customers interact with your app when they sign up, sign in, reset password or update profile you can either configure user flows from the Azure portal or build your own XML custom policies. User flows cover fundamental user journeys but limit UI customizations to only changing logo, changing background and choosing one among three layout templates. If not satisfied with the interface after trying these, then you definitely need to use custom policies.
+User flows and custom policies allow you to determine how your customers interact with your app when they sign up, sign in, reset password and update profile. User flows are easy to set up and recommended for most users. However they limit UI customization options to only adding a brand logo, changing page background and choosing one among three layout templates. If you wan't more you'll have to reach for custom policies.
 
-In this article I will show you how to customize the look and behaviour of a custom policy. We'll discuss options and limitations of different approaches. We be using an example custom policy I made. Get the files from <a href="https://github.com/vinmugambi/azure-b2c-custom-html"> this github repo </a> and follow the instructions in `readme.md` to configure the policy in your tenant.
+In this article I will show you how to change the look of an already built custom policy.I'll be using a password-less policy, that I made by modifying the [Azure AD B2C social and local accounts starter pack](https://github.com/Azure-Samples/active-directory-b2c-custom-policy-starterpack/tree/main/SocialAndLocalAccounts) files, as an example. Download the sample policy from<a href="https://github.com/vinmugambi/azure-b2c-custom-html"> this github repo</a> and follow the instructions in `readme.md` to add it to your B2C tenant.
 
-This is how the login with email journey looks like.
+I'll mainly focus on the local sign in or sign up journey and here is how it's steps currently look like.
 
 <div class="flex">
 
@@ -56,26 +56,129 @@ This is how we want it to look.
 </div>
 </div>
 
+## Why customize
 
-## Why customize the look.
+Login and sign up pages are among the first pages your customers interact with upon acquisition, it's important they be frictionless. Looking at the current journey, there are things that bother me:
 
-One thing I couldn't shake off, is the three blue button at the verify email page. For internal application, this would be ok, cause you can train your staff. but for customer facing applications, this would be confusing and overwhelming. I know this because, because I happen to use a banking application, that asks you to "send a TAN" as a part of the authentication (login and fund transfer). Sometimes, i forget to click that button, as other applications have taught me that it is sent automatically, and since it is the only way to complete the user action. it only makes sense that it should be sent automatically.
+- The multiple primary buttons in the verify email page - I know most of these buttons can be removed without affecting the operation of the policy.
+- The general language of the pages - I don't like the what the headings, subheadings and buttons say and need them to align to our brand.
+- The position and look of error messages.
+- I want to provide a terms of service agreement from outside the custom policy to reduce the number of actions customers need to perform when signing up.
 
-I honestly think this page should only have on button the continue one. That should perform the function of continue and verify button. The resend should be hidden for 1 min and also made to appear like a link.
+Most of these decisions are inspired by the Notion.so authentication pages.
 
-I also want to decide the general page layout and provide subtle agree to our terms links.
+## Adding custom HTML
 
-Azure provides flows which help set up authentication policies and routines including adding other Open ID authentication providers like Google, Facebook to login pages, password recovery routines, and other authentication related journeys. They come with a huge limitation, which Azure documentation downplays "They would work for most situations"; the only thing you can change in the way the flow look is the logo and the page background, and maybe choose among three templated developed by microsoft. If you need to make any other customization, you must use a custom policy.
+It is important to understand this about custom policies:
 
-Azure is not very popular, I actually found out about it by mistake when I was setting up Azure DNS. It's generally looks something that well established organizations would use, since it integrates well with Microsoft ecosystem they are already using. Unlike firebase which is attractive to startups which haven't gotten to that point where you somehow start paying for office software.
+- The files form a hierarchy chain. Elements defined in a file can be changed in a file lower in the hierarchy, a familiar oop concept, you only to reference it element with its id. The `TrustFrameworkBase.xml` afters almost anything you'll need to create a custom policy, so many times we'll be overriding properties defined here. Most things are described here.
+- The file with the `RelayingParty` determines the journey. In most case's you'll define files for sign in journey, reset password, and update profile. in our case we only have one called `NoPassword.xml`. This is because our users don't need to set a password, hence cannot forget it. I also prefer to handle profile profile update within my application instead of delegating to AD B2C.
 
-Setting up custom policy is generally difficult due to the xml api Microsoft offers a lot of cognitive load. I actually felt like a champion when I did one. And all through it, I keep asking myself why I am still doing it. To support this, microsoft offer a lot of templates which cover a lot of user authentication journeys (link). If you are like me, you insist on how you want something should look an work, you'll still need to know a huge part of the policy apis.
+- The `TechnicalProfile`s determine what information you collect from your users and what you do with it. In our case only two of them matter when customizing the ui. The one with id `CollectEmail` and `VerifyEmail` as Id
 
-> Poor development tools around it, No ay to debug them, Unfamiliar and complex api, xml so verbose, so many related concepts that one has to understand.
+The fist step of your `RelayingParty` default journey determines how what is displayed in the first step, in our case a login/signup page. Looking the `ContentDefinitionReferenceId` property, we are using the `api.signuporsignin`. The properties of this file are defined the `TrustFrameworkBase.xml` file. In the we have overridden this file in our `NoPassword.xml`. Editing the base file is not recommended, this is because you might be have more then one policy. It only reasonable that we
 
-In this article, I will show how to go from the ui in the left to the one in the right. I will discuss the limitations and how to around them. Most articles I found were relatively and jumped to give a straight forward answer without explaining the steps.
+```xml
+<OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
+    <ClaimsProviderSelections>
+        <ClaimsProviderSelection ValidationClaimsExchangeId="EmailExchange" />
+        <ClaimsProviderSelection TargetClaimsExchangeId="FacebookExchange" />
+    </ClaimsProviderSelections>
+    <ClaimsExchanges>
+        <ClaimsExchange Id="EmailExchange" TechnicalProfileReferenceId="CollectEmail" />
+    </ClaimsExchanges>
+</OrchestrationStep>
+```
 
-The file used for this article can be found here.
+```xml
+<ContentDefinition Id="api.signuporsignin">
+    <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
+</ContentDefinition>
+```
+
+## initial html
+
+to provide your own html
+azure Ad will inject the html in your api div and override anything you put there.
+ 
+
+ create a file named `html/signuporsignin.html`
+ and put this into it
+
+ ```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
+      }
+
+      .wide {
+        max-width: 800px;
+        min-width: 320px;
+      }
+
+      .centered {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .slim {
+        min-height: 4rem;
+        max-width: 24rem;
+        min-width: 320px;
+      }
+      .text-muted {
+        color: #666;
+        font-size: small;
+      }
+
+      .text-muted a {
+        color: #444;
+      }
+
+      figure#logo {
+        margin: 1rem;
+        font-size: 2rem;
+      }
+    </style>
+    <header>
+      <nav class="wide centered">
+        <figure id="logo">ACME</figure>
+      </nav>
+    </header>
+
+    <!-- Azure AD B2C will insert its html here, anything you put inside this div
+    will be overridden -->
+    <div id="api" class="slim centered">
+      Azure AD B2C will insert its html here, anything you put inside this div
+      will be overridden by azure content.
+    </div>
+
+    <section class="wide centered">
+      <p class="text-muted" style="margin: 3rem 1rem">
+        By clicking "Continue with Email, Facebook" above you acknowledge that
+        you have read and understood, and agree to Participate's
+        <a href="#">Terms of service</a> and
+        <a href="#">Privacy policy</a>
+      </p>
+    </section>
+  </body>
+</html>
+ ```
+
+
+you only need to change the
 
 ## What to cover
 
@@ -91,3 +194,5 @@ The file used for this article can be found here.
 - The microsoft template contract overrides anything you put inside div with id api.
 - page bundle with jquery and handlebars. Bundle phobia guys, this might slow page load time.
 - ON the same note, the pages are rendered from the server- you can notice when you click continue with email, the browsers loads a completely new page.
+
+> Poor development tools around it, No ay to debug them, Unfamiliar and complex api, xml so verbose, so many related concepts that one has to understand.
