@@ -100,58 +100,60 @@ The fist step of your `RelayingParty` default journey determines how what is dis
 
 to provide your own html
 azure Ad will inject the html in your api div and override anything you put there.
- 
 
- create a file named `html/signuporsignin.html`
- and put this into it
+create a file named `html/shared.css` and copy this into it
 
- ```html
+```css
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.wide {
+  max-width: 800px;
+  min-width: 320px;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.slim {
+  min-height: 4rem;
+  max-width: 24rem;
+  min-width: 320px;
+}
+.text-muted {
+  color: #666;
+  font-size: small;
+}
+
+.text-muted a {
+  color: #444;
+}
+
+figure#logo {
+  margin: 1rem;
+  font-size: 2rem;
+}
+```
+
+create a file named `html/signuporsignin.html`
+and put this into it
+
+```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Acme</title>
+    <link rel="stylesheet" href="./shared.css" />
   </head>
   <body>
-    <style>
-      * {
-        box-sizing: border-box;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
-          sans-serif;
-      }
-
-      .wide {
-        max-width: 800px;
-        min-width: 320px;
-      }
-
-      .centered {
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .slim {
-        min-height: 4rem;
-        max-width: 24rem;
-        min-width: 320px;
-      }
-      .text-muted {
-        color: #666;
-        font-size: small;
-      }
-
-      .text-muted a {
-        color: #444;
-      }
-
-      figure#logo {
-        margin: 1rem;
-        font-size: 2rem;
-      }
-    </style>
     <header>
       <nav class="wide centered">
         <figure id="logo">ACME</figure>
@@ -159,7 +161,7 @@ azure Ad will inject the html in your api div and override anything you put ther
     </header>
 
     <!-- Azure AD B2C will insert its html here, anything you put inside this div
-    will be overridden -->
+   will be overridden -->
     <div id="api" class="slim centered">
       Azure AD B2C will insert its html here, anything you put inside this div
       will be overridden by azure content.
@@ -175,10 +177,118 @@ azure Ad will inject the html in your api div and override anything you put ther
     </section>
   </body>
 </html>
- ```
+```
 
+create another file named `html/selfasserted.html` and paste this into it
 
-you only need to change the
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acme</title>
+    <link rel="stylesheet" href="./shared.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="wide centered">
+        <figure id="logo">ACME</figure>
+      </nav>
+    </header>
+
+    <div id="api" class="slim centered">
+      Azure AD B2C will insert its html here, anything you put inside this div
+      will be overridden by azure content.
+    </div>
+  </body>
+</html>
+```
+
+<sink>
+You'll notice that I'm using the same styles in both pages instead of supplying a shared css files. Well that is one one limitation you'll have to deal with. CSS files wont load correctly.
+</sink>
+
+## host the files in a publicly available domain and enable cors
+
+You can use any cloud static hosting solution you like including Azure blob storage, Google storage, e.tc.
+I'll use [Surge.sh](https://surge.sh/help/getting-started-with-surge) for its simplicity.
+
+ <notice>
+ The following require that you have [Node.js](https://nodejs.org) installed. Npm comes bundled with Node.js
+ </notice>
+
+Open the terminal, make sure you are in the folder that contains your project.
+
+Install surge globally
+
+```bash
+npm install -g surge
+```
+
+Navigate to the folder that contains your `html` files and create a `CORS` file
+
+```bash
+cd html && echo "*" > CORS
+```
+
+Run surge to initiate deployment and answer the cli prompts
+
+```bash
+surge
+```
+
+Surge will deploy your files to surge.sh and return their public url
+
+![surge response](./../../static/surge_response.png)
+
+Now that you have the public url, open the `html/signuporsignin.html` and change the css links to an absolute path. Do the same thing in `selfasserted.html`
+
+```html
+<title>Acme</title>
+<link rel="stylesheet" href="https://callous-move.surge.sh/shared.css" />
+```
+
+deploy your changes to surge.
+
+```bash
+echo callous-move.surge.sh > CNAME && surge
+```
+
+The CNAME file helps surge remember your public domain, instead of creating a new one.
+
+## regenerate your custom policy files
+
+Copy this url into `appsettings.json`.
+
+```json
+{
+  "PoliciesFolder": "",
+  "EnvironmentsFolder": "dist",
+  "Environments": [
+    {
+      "Name": "Development",
+      "Production": false,
+      "Tenant": "participateb2c",
+      "PolicySettings": {
+        "IdentityExperienceFrameworkAppId": "4ca6fc17-f6f5-4d91-b789-4e320e0b1a85",
+        "ProxyIdentityExperienceFrameworkAppId": "de823b09-5e3b-46a4-9fe1-9f5ec3807197",
+        "FacebookAppId": "8180550952015656",
+        "signInTemplateUrl": "https://callous-move.surge.sh/signuporsignin.html",
+        "verifyTemplateUrl": "https://callous-move.surge.sh/selfasserted.html"
+      }
+    }
+  ]
+}
+```
+
+Now, generate policy again based on the updates `appsettings.json`. To do this, click `ctrl+shift+p` to open VS code command pallet. Search for "B2C build all policies" and click it.
+Upload the generated files, located in `dist/Development`, to AD B2C tenant using the azure portal and run the one called `B2C_1A_NO_PASSWORD`
+
+Your login page should now look like this
+
+![](../../static/minimal_changes.png)
 
 ## What to cover
 
