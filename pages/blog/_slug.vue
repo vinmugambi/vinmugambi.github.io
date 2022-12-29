@@ -82,9 +82,16 @@ article ol {
   @apply list-decimal;
 }
 
-article img,
-figure {
-  @apply rounded border my-4;
+article img {
+  @apply rounded my-4;
+}
+
+figure figcaption {
+  text-align: center;
+  font-style: italic;
+  font-size: small;
+  margin-top: -.8rem;
+  margin-bottom: 1rem;
 }
 
 article a {
