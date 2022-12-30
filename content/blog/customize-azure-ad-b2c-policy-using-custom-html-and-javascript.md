@@ -1,13 +1,12 @@
 ---
 title: "Customize an Azure AD B2C policy using HTML and JavaScript"
-draft: true
 tagline: "Make your authN pages look and work the way you want"
 code: "https://github.com/vinmugambi/azure-b2c-custom-html"
 demo: "https://github.com/vinmugambi/azure-b2c-custom-html"
 ---
 
 <notice>
-Find the code for this tutorial at <a href="https://github.com/vinmugambi/azure-b2c-custom-html"> this GitHub repo </a>
+Find the end result of this tutorial at <a href="https://github.com/vinmugambi/azure-b2c-custom-html"> this GitHub repo </a>
 </notice>
 
 <notice>
@@ -18,11 +17,9 @@ User flows and custom policies allow you to determine how your customers interac
 
 In this article I will show you how to alter the look and behaviour of a custom policy to fit your needs. I'll be customizing a password-less policy I made.
 
-## Why customize
+### Why customize
 
-Login and sign up pages are among the first pages your customers interact with upon acquisition, it's important that you make them frictionless.
-
-Here is how the local authentication journey looks now.
+Login and sign up pages are among the first pages your new customers interact with, it's important that you make them frictionless.
 
 <div class="flex full-width px-8">
 <figure class="mx-auto">
@@ -31,12 +28,16 @@ Here is how the local authentication journey looks now.
 </figure>
 </div>
 
-Looking at the current journey, there are things that bother me:
+Looking at current journey sign in journey, there are things that bother me:
 
-- The multiple primary buttons in the verify email page - I know most of these buttons can be removed without affecting the operation of the policy.
-- The general language of the pages - I don't like the what the headings, subheadings and buttons say and need them to align to our brand.
-- The position and look of error messages.
-- I want to provide a terms of service agreement from outside the custom policy to reduce the number of actions customers need to perform when signing up.
+- The user has to click too many buttons during sign in
+- All the button in the journey have a primary look and can confuse a user.
+- It's inconvenient to ask the user to "send a verification" code.
+- I need to make the text on buttons, errors, headers and messages align to the sign in journey.
+- The error are are awkwardly positioned.
+- I want to provide a terms of service agreement from outside the custom policy to keep the number of clicks needed down.
+
+By the end of this article we should have something close to this.
 
 <div class="flex full-width px-8">
 <figure class="mx-auto">
@@ -54,51 +55,25 @@ Looking at the current journey, there are things that bother me:
 
 ### Setup
 
-To begin, download the unstyled sample policy from<a href="https://github.com/vinmugambi/azure-b2c-custom-html"> this GitHub repository</a> and switch to the `unstyled` branch. Then, follow the readme instructions add it to your Azure AD B2C tenant.
+To begin, download the sample policy from <a href="https://github.com/vinmugambi/azure-b2c-custom-html">this GitHub repository</a> and switch to the `unstyled` branch. Then, follow the readme instructions add it to your Azure AD B2C tenant.
 
-```
+```bash{}[terminal]
 git clone git@github.com:vinmugambi/azure-b2c-custom-html.git
 cd azure-b2c-custom-html
 git checkout unstyled
 ```
 
-## Adding custom HTML
+Open the folder in Vs code
 
-It is important to understand this about custom policies:
-
-- The files form a hierarchy chain. Elements defined in a file can be changed in a file lower in the hierarchy, a familiar oop concept, you only to reference it element with its id. The `TrustFrameworkBase.xml` afters almost anything you'll need to create a custom policy, so many times we'll be overriding properties defined here. Most things are described here.
-- The file with the `RelayingParty` determines the journey. In most case's you'll define files for sign in journey, reset password, and update profile. in our case we only have one called `NoPassword.xml`. This is because our users don't need to set a password, hence cannot forget it. I also prefer to handle profile profile update within my application instead of delegating to AD B2C.
-
-- The `TechnicalProfile`s determine what information you collect from your users and what you do with it. In our case only two of them matter when customizing the ui. The one with id `CollectEmail` and `VerifyEmail` as Id
-
-The fist step of your `RelayingParty` default journey determines how what is displayed in the first step, in our case a login/signup page. Looking the `ContentDefinitionReferenceId` property, we are using the `api.signuporsignin`. The properties of this file are defined the `TrustFrameworkBase.xml` file. In the we have overridden this file in our `NoPassword.xml`. Editing the base file is not recommended, this is because you might be have more then one policy. It only reasonable that we
-
-```xml
-<OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
-    <ClaimsProviderSelections>
-        <ClaimsProviderSelection ValidationClaimsExchangeId="EmailExchange" />
-        <ClaimsProviderSelection TargetClaimsExchangeId="FacebookExchange" />
-    </ClaimsProviderSelections>
-    <ClaimsExchanges>
-        <ClaimsExchange Id="EmailExchange" TechnicalProfileReferenceId="CollectEmail" />
-    </ClaimsExchanges>
-</OrchestrationStep>
+```bash{}[terminal]
+code .
 ```
 
-```xml
-<ContentDefinition Id="api.signuporsignin">
-    <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
-</ContentDefinition>
-```
+## Create html files and link them to your policy
 
-## initial html
+Create a `html/shared.css` file and copy this into it.
 
-to provide your own html
-azure Ad will inject the html in your api div and override anything you put there.
-
-create a file named `html/shared.css` and copy this into it
-
-```css
+```css{}[shared.css]
 * {
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -152,10 +127,9 @@ main {
 }
 ```
 
-create a file named `html/signuporsignin.html`
-and paste this into it
+Create a `html/signuporsignin.html` file with the following contents.
 
-```html
+```html{}[signuporsignin.html]
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -206,9 +180,9 @@ and paste this into it
 </html>
 ```
 
-create another file named `html/selfasserted.html` and paste this into it
+Create a `html/selfasserted.html` and paste this into it
 
-```html
+```html{}[selfasserted.html]
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -245,44 +219,42 @@ create another file named `html/selfasserted.html` and paste this into it
 </html>
 ```
 
-## host the files in a publicly available domain and enable cors
+### Host the files in a publicly available domain and enable cors
 
-You can use any cloud static hosting solution you like including Azure blob storage, Google storage, e.tc.
-I'll use [Surge.sh](https://surge.sh/help/getting-started-with-surge) for its simplicity.
+I'll be using [Surge.sh](https://surge.sh/help/getting-started-with-surge) for its simplicity. However you can use your preferred static hosting solution.
 
  <notice>
- The following require that you have [Node.js](https://nodejs.org) installed. Npm comes bundled with Node.js
+ The following require that you have <a href="https://nodejs.org"> Node.js </a> installed. Npm comes bundled with Node.js
  </notice>
 
-Open the terminal, make sure you are in the folder that contains your project.
+Open the terminal, make sure you are in the folder that contains your project. Install surge globally
 
-Install surge globally
-
-```bash
+```bash{}[terminal]
 npm install -g surge
 ```
 
 Navigate to the folder that contains your `html` files and create a `CORS` file
 
-```bash
+```bash{}[terminal]
 cd html && echo "*" > CORS
 ```
 
-Run surge to initiate deployment and answer the cli prompts
+Run surge to initiate deployment. Surge will ask you to answer a few prompts before making the deployment.
 
-```bash
+```bash{}[terminal]
 surge
 ```
 
-Surge will deploy your files to surge.sh and return their public url
+The surge command will respond get the public url of your hosted files.
 
-![surge response](./../../static/surge_response.png)
+<nuxt-img src="/surge_response.png"> </nuxt-img>
 
-Now that you have the public url, open the `html/signuporsignin.html` and change the css links to an absolute path. Do the same thing in `selfasserted.html`
+Change the css links to the path of you hosted css in both `html/signuporsignin.html` and `html/selfasserted.html`
 
-```html
-<title>Acme</title>
-<link rel="stylesheet" href="https://callous-move.surge.sh/shared.css" />
+```diff-html{}[signuporsignin.html]
+  <title>Acme</title>
+- <link rel="stylesheet" href="./shared.css" />
++ <link rel="stylesheet" href="https://callous-move.surge.sh/shared.css" />
 ```
 
 deploy your changes to surge.
@@ -291,57 +263,74 @@ deploy your changes to surge.
 echo callous-move.surge.sh > CNAME && surge
 ```
 
-The CNAME file helps surge remember your public domain, instead of creating a new one.
+The CNAME file helps surge remember your public domain each time you deploy changes.
 
-## regenerate your custom policy files
+### Configure your policy to use the hosted html files
 
-Copy this url into `appsettings.json`.
+<notice>
+ This steps depend on the <a href="https://marketplace.visualstudio.com/items?itemName=AzureADB2CTools.aadb2c"> Azure AD B2C extension for VS code </a>
+</notice>
 
-```json
-{
-  "PoliciesFolder": "",
-  "EnvironmentsFolder": "dist",
-  "Environments": [
-    {
-      "Name": "Development",
-      "Production": false,
-      "Tenant": "participateb2c",
-      "PolicySettings": {
-        "IdentityExperienceFrameworkAppId": "4ca6fc17-f6f5-4d91-b789-4e320e0b1a85",
-        "ProxyIdentityExperienceFrameworkAppId": "de823b09-5e3b-46a4-9fe1-9f5ec3807197",
-        "FacebookAppId": "8180550952015656",
-        "signInTemplateUrl": "https://callous-move.surge.sh/signuporsignin.html",
-        "verifyTemplateUrl": "https://callous-move.surge.sh/selfasserted.html"
-      }
-    }
-  ]
-}
+Copy the public urls of your hosted html into `appsettings.json`.
+
+```diff-json{}[appsettings.json]
+ {
+   "PoliciesFolder": "",
+   "EnvironmentsFolder": "dist",
+   "Environments": [
+     {
+       "Name": "Development",
+       "Production": false,
+       "Tenant": "your-b2c-tenant",
+       "PolicySettings": {
+         "IdentityExperienceFrameworkAppId": "4ca6fc17-f6f5-4d91",
+         "ProxyIdentityExperienceFrameworkAppId": "de823b09-5e3b-46a4",
+         "FacebookAppId": "8180550952015656",
+-        "signInTemplateUrl": "~/tenant/templates/AzureBlue/unified.cshtml",
+-        "verifyTemplateUrl": "~/tenant/templates/AzureBlue/selfAsserted.cshtml"
++        "signInTemplateUrl": "https://callous-move.surge.sh/signuporsignin.html",
++        "verifyTemplateUrl": "https://callous-move.surge.sh/selfasserted.html"
+       }
+     }
+   ]
+ }
 ```
 
-Now, generate policy again based on the updates `appsettings.json`. To do this, click `ctrl+shift+p` to open VS code command pallet. Search for "B2C build all policies" and click it.
-Upload the generated files, located in `dist/Development`, to AD B2C tenant using the azure portal and run the one called `B2C_1A_NO_PASSWORD`
+Now, generate the policy files based on `appsettings.json`. To do this, click `ctrl+shift+p` to open VS code command pallet. Search for "B2C build all policies" and click it.
 
-Your login page should now look like this
+Upload the generated files, located in `dist/Development`, to AD B2C tenant using the azure portal and run the it. It will be labelled as `B2C_1A_NO_PASSWORD`
 
-![Login page with custom html](../../static/minimal_changes.png)
+Your should get something close to this
 
-Let's now discuss what happened. Azure AD will merge its html with your provided html. It checks for the block element with the id of "api" and inserts an unstyled login form there, replacing everything you put there. This gives you control of any markup outside the api div and also the location of the api div.
+<nuxt-img src="minimal_changes.png"></nuxt-img>
 
-## how do you style the content inside div
+Let's pause for a moment and discuss what happened. Azure AD B2C will merge its own html with your custom html. It checks for the block element with the id of "api" and inserts the journey specific markup there to replace anything you put there. This gives you control of any markup outside the api element, it's position and look.
 
-First let's discuss where the elements provided azure ad come from. These elements are determined by two things;
+```xml
+<ContentDefinition Id="api.signuporsignin">
+  <LoadUri>https://callous-move.surge.sh/signuporsignin.html</LoadUri>
+  <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
+  <DataUri>urn:com:microsoft:aad:b2c:elements:contract:unifiedssp:2.1.5</DataUri>
+  <Metadata>
+    <Item Key="DisplayName">Signin and Signup</Item>
+    </Metadata>
+</ContentDefinition>
+```
 
-- Your self asserted technical profile determines what input inputs and buttons are displayed.
-- DataUri value in the content definition of you UI technical profile determines the elements classes, id and general markup
-- The localized resources, found in `TrustFrameworkLocalization.xml` determine the text on information, headers, input labels, placeholder and buttons.
+It's important that you understand tis two properties of your content definition
 
-Since you don't want got through the process of generating and uploading and testing your custom html each times its best we develop the html from localhost from now.
+- The `LoadUri` of a content definition signals to Azure AD B2C what page template to use.
+- The `DataUri` determines the structure of the inputs configured on your UI `TechnicalProfile`
 
-to do this, go the browser developer tools and copy everything inside div id = "api"
+## Setup local development
 
-![](../../static/copy-inner-html.png)
+We don't want test your login pages from the Azure portal each time we make a change. It's better we test them locally and upload them for testing when we think we're done.
 
-and paste it into your "signuporsignin.html` api's div. Your api div should now look like this.
+To do this, go the browser developer tools and copy everything inside the `<div id="api">`
+
+<nuxt-img src="/copy-inner-html.png"></nuxt-img>
+
+and paste it into your "signuporsignin.html` in the same position to get something close to this.
 
 ```html{}[signuporsignin.html]
 <div id="api" class="slim">
@@ -368,8 +357,8 @@ and paste it into your "signuporsignin.html` api's div. Your api div should now 
 </div>
 ```
 
-Enter your email and click sign in to view the verify email page.
-Copy the contents of the api div into your `selfasserted.html` to make it look like this.
+To navigate to verify email page, enter your email and click sign in.
+Again, copy the contents of the `<div id="api">` into your `selfasserted.html` to make it look like this.
 
 ```html{}[selfasserted.html]
 <div id="api" class="slim">
@@ -383,49 +372,49 @@ Copy the contents of the api div into your `selfasserted.html` to make it look l
 </div>
 ```
 
-Doing this will help you know the structure of the html provided by AD B2C thus be able to style it or play with it, without needing to test your custom policies from the azure portal.
-
 Now our local html pages exactly match the look of our authentication pages and we can now use the vs code live server to serve our html and update changes as we make them.
 
 Right click the `html/signinorsignup.html` file from vs code's side bar and select "open with live server". This will serve and open the file in your default browser.
 
-![](../../static/open-live-server.png)
-
-Now everything is set up for local development.
+<nuxt-img src="/open-live-server.png"></nuxt-img>
 
 ## Customizing the login page (signuporsignin.html)
 
-To achieve what we wanted we will:
-
 ### Change the text on the buttons
 
-You can do this using JavaScript but Microsoft recommends that you do this from the policy files and we'll do do jus that.
-Open `TrustFrameworkLocalization.xml` and find `<LocalizedString>` elements with `stringId` as `button_signin` and `FacebookExchange`
-Change them as follows
+You can do this using JavaScript but Microsoft recommends that you do this from the policy files. Open the `TrustFrameworkLocalization.xml` file and find `<LocalizedString>` elements that have have `stringId` set to `button_signin` and `FacebookExchange`
+Change them aas follows.
 
-```xml
-<LocalizedResources Id="api.signuporsignin.en">
-  <LocalizedStrings>
-
-    <LocalizedString ElementType="UxElement" StringId="button_signin">Continue with Email</LocalizedString>
+```diff-xml{}[TrustFrameworkLocalization.xml]
+ <LocalizedResources Id="api.signuporsignin.en">
+   <LocalizedStrings>
+-    <LocalizedString ElementType="UxElement" StringId="button_signin">Sign in</LocalizedString>
++    <LocalizedString ElementType="UxElement" StringId="button_signin">Continue with Email</LocalizedString>
     <!-- omitted so save space -->
-    <LocalizedString ElementType="ClaimsProvider" StringId="FacebookExchange">Continue with Facebook</LocalizedString>
+-   <LocalizedString ElementType="ClaimsProvider" StringId="FacebookExchange">Facebook</LocalizedString>
++    <LocalizedString ElementType="ClaimsProvider" StringId="FacebookExchange">Continue with Facebook</LocalizedString>
     <!-- omitted so save space -->
   </LocalizedStrings>
-</LocalizedResources>
+ </LocalizedResources>
 
 ```
 
-One more thing, Open `NoPassword.xml` and make sure the `<RelayingParty>` element contains this. This will allow us to add javascript to our html.
+### Allow Javascript execution
 
-```xml
-<UserJourneyBehaviors>
-  <ScriptExecution>Allow</ScriptExecution>
-</UserJourneyBehaviors>
+With the current setup, our custom JavaScript will be ignored. To resolve this, let's enable it in the `NoPassword.xml` file.
+
+```diff-xml{}[NoPassword.xml]
+ <RelyingParty>
+  <DefaultUserJourney ReferenceId="PasswordLessLogin" />
++   <UserJourneyBehaviors>
++    <ScriptExecution>Allow</ScriptExecution>
++   </UserJourneyBehaviors>
+  <!-- omitted intentionally -->
+ </RelayingParty>
 ```
 
 Save the files and upload them to your b2c tenant using the Azure portal.
-we should now make the same changes to our local `html/signuporsignin.html` for visual consistency
+Make the same changes to our local `html/signuporsignin.html` to match the changes we made.
 
 ```html{}[signuporsignin.html]
 <!-- omitted intentionally -->
@@ -445,7 +434,7 @@ we should now make the same changes to our local `html/signuporsignin.html` for 
 
 ### Change the order of our login options and hide headings
 
-It's weird that when use your own html, the login options no longer abide the way ordered them the first `OrchestrationStep`. To solve this styles after the opening `body` tag of your html.
+It's weird how the login options no longer abide to the policy when use supply a custom html template. To solve this, add this styles after the opening `body` tag of your html. This styles will also hide our headings both visually and to screen readers.
 
 ```html{}[signuporsignin.html]
 <body>
@@ -633,19 +622,18 @@ button#FacebookExchange {
 
 Remember to readd a reference to this css file in your html
 
-```html
+```diff-html{}[signuporsignin.html]
 <!-- omitted intentionally -->
-<title>Acme</title>
-<link rel="stylesheet" href="https://callous-move.surge.sh/shared.css" />
-<link rel="stylesheet" href="./shared.css" />
+  <title>Acme</title>
+- <link rel="stylesheet" href="https://callous-move.surge.sh/shared.css" />
++ <link rel="stylesheet" href="./shared.css" />
 <!-- omitted intentionally -->
 ```
 
 ### Autofocus on the email input when the page loads
 
-We only changed the visual order of the html elements, that is why the "continue with facebook" button is still focussed.
-
-To make our email input take focus, add this javascript just before the end of body
+Notice how the is why the "continue with facebook" button is focussed on page load.
+To transfer focus to our email input, add this javascript just before the closing `</body>` tag.
 
 ```html{}[signuporsignin.html]
 <body>
@@ -656,11 +644,11 @@ To make our email input take focus, add this javascript just before the end of b
 </body>
 ```
 
-## Customize the verify email page
+## Customize the verify email page (selfasserted.html)
 
-This will be a bit interesting since we are changing both look and behaviour. There is a lot going on here, so i'll take longer steps and explain them briefly.
+We'll be changing a lot here, so i'll take longer steps and explain them briefly.
 
-add the following styles after the opening `<body>` tag
+Add the following styles after the opening `<body>` tag
 
 ```html{}[selfasserted.html]
 <body>
@@ -719,7 +707,7 @@ add the following styles after the opening `<body>` tag
 </body>
 ```
 
-add this script before the closing `</body>` tag
+Then add this script before the closing `</body>` tag
 
 ```html{}[selfasserted.html]
 <body>
@@ -853,6 +841,15 @@ add this script before the closing `</body>` tag
 </body>
 ```
 
+Here is what this CSS and JavaScript is doing.
+
+<div class="flex full-width px-8">
+<figure class="mx-auto">
+ <nuxt-img src="/changes.png"> </nuxt-img>
+ <figcaption>How We use JS to merge three UI steps into one</figcaption>
+</figure>
+</div>
+
 ## Test again
 
 Detach the your local css from `html/signuporsignin.html` and `html/selfasserted.html`
@@ -873,5 +870,4 @@ Now go the azure portal to test your new authentication pages.
 
 ## Conclusion
 
-> page bundle with jquery and handlebars. Bundle phobia guys, this might slow page load time.
-> Poor development tools around it, No ay to debug them, Unfamiliar and complex api, xml so verbose, so many related concepts that one has to understand.
+Custom policies are not the easiest to work with but give you power to alter the experiences to meet your needs.

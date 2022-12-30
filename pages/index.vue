@@ -28,10 +28,9 @@ export default {
       </div>
       <dl class="self-center">
         <dt>
-          Personal blog by
-          <nuxt-link class="link" to="/about">Vincent Mugambi</nuxt-link>
+          <nuxt-link class="link" to="/about">Vincent Mugambi's</nuxt-link> blog
         </dt>
-        <dd>Here, I share things I learn during work and play</dd>
+        <dd>Sharing solutions to problems I had trouble solving</dd>
       </dl>
     </aside>
 
