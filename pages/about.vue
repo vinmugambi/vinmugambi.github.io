@@ -5,7 +5,7 @@
         <div class="inline-block">
           <img
             class="w-64 rounded-xl bg-gray-50"
-            src="/avatar.jpg"
+            src="/mugambi-img.jpg"
             alt="Avatar of Vincent Mugambi"
           />
         </div>
@@ -26,7 +26,7 @@
       </ul>
     </section>
 
-    <div>
+    <!-- <div>
       <nav role="tablist">
         <button
           v-for="tab in tabList"
@@ -84,7 +84,6 @@
               <i>{{ job.address }}</i>
             </div>
 
-            <!-- <pre>{{job}}</pre> -->
           </li>
 
           <li v-for="(duty, index) in job.duties" :key="`${index}-${job.slug}`">
@@ -196,7 +195,7 @@
 
         <li><a href="https://twitter.com/kanyewest">Kanye West</a></li>
       </ul>
-    </section>
+    </section> -->
   </main>
 </template>
 
@@ -204,11 +203,24 @@
 export default {
   async asyncData({ $content }) {
     const about = await $content("about").fetch();
-    const projects = await $content("projects").fetch();
+    // const projects = await $content("projects").fetch();
     const contacts = await $content("contacts").fetch();
-    const work = await $content("work_history").fetch();
-    const education = await $content("education").fetch();
-    return { about, projects, contacts, work, education };
+    // const work = await $content("work_history").fetch();
+    // const education = await $content("education").fetch();
+    return { about, contacts };
+  },
+  head() {
+    return {
+      title: "Vincent Mugambi | About",
+      meta: [
+        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+        {
+          hid: "description",
+          name: "description",
+          content: "Who is Vincent Mugambi?",
+        },
+      ],
+    };
   },
   data() {
     return {

@@ -9,6 +9,19 @@ export default {
   methods: {
     formatDate,
   },
+  head() {
+    return {
+      title: "Vincent Mugambi | " + this.page.title,
+      meta: [
+        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+        {
+          hid: "description",
+          name: "description",
+          content: this.page.description,
+        },
+      ],
+    };
+  },
 };
 </script>
 
@@ -90,7 +103,7 @@ figure figcaption {
   text-align: center;
   font-style: italic;
   font-size: small;
-  margin-top: -.8rem;
+  margin-top: -0.8rem;
   margin-bottom: 1rem;
 }
 

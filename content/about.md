@@ -19,6 +19,6 @@ skills:
     - Figma
 ---
 
-I'm a front-end engineer focusing on JavaScript, Vue.js, React.js and Tailwindcss. When necessary, I build services on either Laravel or Express.js.
+I'm a front-end engineer focusing on JavaScript, React.js, Nest.js and Tailwindcss.
 
-Here is a list of libraries and tools I am conversant with and have used within the last 2 years:
+I am conversant with these tools and have used them within the last 2 years:
